@@ -7,6 +7,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  role: string;
 }
 
 export default function AdminDashboard() {
@@ -51,6 +52,27 @@ export default function AdminDashboard() {
     }
   };
 
+  // Update user role function
+  const updateUserRole = async (userId: string, newRole: string) => {
+    try {
+      const res = await fetch(`/api/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: newRole }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update role");
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, role: newRole } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error updating user role:", error);
+    }
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
@@ -71,6 +93,7 @@ export default function AdminDashboard() {
               <th className="border border-gray-300 px-4 py-2">ID</th>
               <th className="border border-gray-300 px-4 py-2">Name</th>
               <th className="border border-gray-300 px-4 py-2">Email</th>
+              <th className="border border-gray-300 px-4 py-2">Role</th>
               <th className="border border-gray-300 px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -81,19 +104,35 @@ export default function AdminDashboard() {
                   <td className="border border-gray-300 px-4 py-2">{user.id}</td>
                   <td className="border border-gray-300 px-4 py-2">{user.name}</td>
                   <td className="border border-gray-300 px-4 py-2">{user.email}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border border-gray-300 px-4 py-2">{user.role}</td>
+                  <td className="border border-gray-300 px-4 py-2 flex gap-2">
                     <button
                       onClick={() => deleteUser(user.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete
                     </button>
+                    {user.role !== "admin" ? (
+                      <button
+                        onClick={() => updateUserRole(user.id, "admin")}
+                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      >
+                        Promote to Admin
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => updateUserRole(user.id, "user")}
+                        className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
+                      >
+                        Demote to User
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="text-center py-4">No users found</td>
+                <td colSpan={5} className="text-center py-4">No users found</td>
               </tr>
             )}
           </tbody>
