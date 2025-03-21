@@ -20,7 +20,7 @@ export default function SignIn() {
   const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // Canvas animation for the left panel
+  //
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -50,27 +50,24 @@ export default function SignIn() {
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Update and draw particles
+      
       particles.forEach((particle) => {
         particle.x += particle.speedX
         particle.y += particle.speedY
 
-        // Bounce off edges
         if (particle.x < 0 || particle.x > canvas.width) {
           particle.speedX *= -1
         }
+        
         if (particle.y < 0 || particle.y > canvas.height) {
           particle.speedY *= -1
         }
-
-        // Draw particle
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
         ctx.fillStyle = particle.color
         ctx.fill()
       })
 
-      // Draw connections between particles
       particles.forEach((particleA, i) => {
         particles.slice(i + 1).forEach((particleB) => {
           const dx = particleA.x - particleB.x
@@ -93,7 +90,6 @@ export default function SignIn() {
 
     animate()
 
-    // Handle resize
     const handleResize = () => {
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight

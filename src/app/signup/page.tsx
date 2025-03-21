@@ -43,7 +43,9 @@ export default function SignUp() {
 
     // Animation function
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      if (canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+      }
 
       // Update and draw particles
       particles.forEach((particle) => {
