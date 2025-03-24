@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { NextAuthOptions } from "next-auth";
 import { compare } from "bcryptjs";
 
@@ -50,19 +52,46 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email || `${profile.id}@github.com`,
+        };
+      },
+    }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id;
-        token.role = (user as any).role; // Ensure role is included
+        let existingUser = await prisma.user.findUnique({ where: { email: user.email } });
+
+        if (!existingUser) {
+          existingUser = await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              role: "user", // Assign default role
+            },
+          });
+        }
+
+        token.id = existingUser.id;
+        token.role = existingUser.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string; // Ensure role is available in session
+        session.user.role = token.role as string;
       }
       return session;
     },

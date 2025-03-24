@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import  {authOptions}  from "../../../lib/auth"; // Ensure authOptions is correctly set up
+import { authOptions } from "../../../lib/auth"; // Ensure authOptions is correctly set up
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -10,17 +10,35 @@ interface TodoRequestBody {
   text: string;
 }
 
+// Function to get user from database for OAuth users
+async function getUser(sessionUser: any) {
+  if (!sessionUser?.id) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: sessionUser?.email },
+    });
+    return dbUser;
+  }
+  return { id: sessionUser.id };
+}
+
 // Fetch only the authenticated user's todos
 export async function GET(): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user?.id) {
+  if (!session || !session.user?.email) {
+    console.error("Unauthorized request: No valid session");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await getUser(session.user);
+  if (!user) {
+    console.error("User not found in database:", session.user.email);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const todos = await prisma.todo.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
     });
 
     return NextResponse.json(todos, { status: 200 });
@@ -34,7 +52,14 @@ export async function GET(): Promise<NextResponse> {
 export async function POST(req: Request): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user?.id) {
+  if (!session || !session.user?.email) {
+    console.error("Unauthorized request: No valid session");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await getUser(session.user);
+  if (!user) {
+    console.error("User not found in database:", session.user.email);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -49,7 +74,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       data: {
         text: body.text,
         completed: false,
-        userId: session.user.id,
+        userId: user.id,
       },
     });
 

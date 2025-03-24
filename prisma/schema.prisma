@@ -6,13 +6,12 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id       String  @id @default(uuid())
-  name     String
+  name     String?
   email    String  @unique
-  password String
-  role     String  @default("user") 
+  role     String  @default("user")
+  password String? // Nullable because GitHub users don’t have passwords
   todos    Todo[]
 }
 
