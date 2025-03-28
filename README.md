@@ -1,6 +1,8 @@
 # TaskEase
 
 TaskEase is a task management web application built with Next.js, PostgreSQL, and Prisma. It provides an intuitive interface for managing tasks efficiently with user authentication and role-based access.
+![Home page](https://github.com/user-attachments/assets/e86df427-67ab-436b-966c-a67a9d20bb6b)
+
 
 ## Features
 
@@ -11,7 +13,7 @@ TaskEase is a task management web application built with Next.js, PostgreSQL, an
 - ✅ Optimized UI with Tailwind CSS
 - ✅ Responsive design for all devices
 
-## Tech Stack
+## Tech Stack  
 
 - **Frontend:** Next.js (React), TypeScript, Tailwind CSS
 - **Backend:** Next.js API Routes, Prisma, PostgreSQL
@@ -35,8 +37,6 @@ git clone https://github.com/your-repo/taskease.git
 cd taskease
 npm install
 
-
-![Home page](https://github.com/user-attachments/assets/f1781250-4936-4d6b-a8c0-7cc3fad7a84e)
 
 
 
