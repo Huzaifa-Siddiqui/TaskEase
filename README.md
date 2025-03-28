@@ -36,5 +36,8 @@ cd taskease
 npm install
 
 
+![Home page](https://github.com/user-attachments/assets/f1781250-4936-4d6b-a8c0-7cc3fad7a84e)
+
+
 
 
