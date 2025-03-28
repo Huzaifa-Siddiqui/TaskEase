@@ -44,6 +44,9 @@ export const authOptions: NextAuthOptions = {
           throw new Error("No user found with this email");
         }
 
+        if (!user.password) {
+          throw new Error("User password is null or undefined");
+        }
         const isValidPassword = await compare(credentials.password, user.password);
         if (!isValidPassword) {
           throw new Error("Incorrect password");
@@ -71,6 +74,9 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       if (user) {
+        if (!user.email) {
+          throw new Error("User email is null or undefined");
+        }
         let existingUser = await prisma.user.findUnique({ where: { email: user.email } });
 
         if (!existingUser) {
@@ -78,7 +84,7 @@ export const authOptions: NextAuthOptions = {
             data: {
               email: user.email,
               name: user.name,
-              role: "user", // Assign default role
+              role: "user",          
             },
           });
         }

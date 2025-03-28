@@ -103,16 +103,18 @@ export default function SignIn() {
 
     return () => {
       window.removeEventListener("resize", handleResize)
+      
     }
+      
   }, [])
 
   useEffect(() => {
     if (status === "authenticated" && userData?.id) {
-      if (userData.id === "3ed0bcf7-dc8b-4022-9295-d21bbc14aa1c") {
-        router.push("/admin-dashboard")
-      } else {
+      // if (userData.id === "3ed0bcf7-dc8b-4022-9295-d21bbc14aa1c") {
+      //   router.push("/admin-dashboard")
+      // } else {
         router.push("/dashboard")
-      }
+      // }
     }
   }, [userData, status, router])
 

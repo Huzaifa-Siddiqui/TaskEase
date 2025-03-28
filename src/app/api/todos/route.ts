@@ -13,6 +13,7 @@ interface TodoRequestBody {
 // Function to get user from database for OAuth users
 async function getUser(sessionUser: any) {
   if (!sessionUser?.id) {
+    
     const dbUser = await prisma.user.findUnique({
       where: { email: sessionUser?.email },
     });
