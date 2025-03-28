@@ -8,6 +8,8 @@ TaskEase is a task management web application built with Next.js, PostgreSQL, an
 ![Signin](https://github.com/user-attachments/assets/48a5b48c-86e3-4077-84a8-e44b945a6321)
 # Dashboard
 ![Dashboard](https://github.com/user-attachments/assets/c2ab2514-bccf-42c3-b1ee-92ba88f4bdb5)
+# Admin Dashboard
+![admin dashboard](https://github.com/user-attachments/assets/ebb540ff-188c-4b7b-a702-8ffbf6fa5240)
 
 ## Features
 
