@@ -4,6 +4,7 @@ import { useState, type FormEvent, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight } from "lucide-react"
+import SignInButtons from './../../components/ui/buttons';
 
 export default function SignUp() {
   const [name, setName] = useState<string>("")
@@ -18,9 +19,10 @@ export default function SignUp() {
   // Canvas animation for the left panel
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas) 
 
-    const ctx = canvas.getContext("2d")
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
     if (!ctx) return
 
     canvas.width = canvas.offsetWidth
@@ -44,7 +46,9 @@ export default function SignUp() {
     // Animation function
     function animate() {
       if (canvas) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+        }
       }
 
       // Update and draw particles
@@ -53,18 +57,22 @@ export default function SignUp() {
         particle.y += particle.speedY
 
         // Bounce off edges
-        if (particle.x < 0 || particle.x > canvas.width) {
+        if (canvas && (particle.x < 0 || particle.x > canvas.width)) {
           particle.speedX *= -1
         }
-        if (particle.y < 0 || particle.y > canvas.height) {
+        if (canvas && (particle.y < 0 || particle.y > canvas.height)) {
           particle.speedY *= -1
         }
 
         // Draw particle
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
-        ctx.fillStyle = particle.color
-        ctx.fill()
+        if (!ctx) return;
+        if (!ctx) return;
+        if (ctx) {
+          ctx.beginPath()
+          ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
+          ctx.fillStyle = particle.color
+          ctx.fill()
+        }
       })
 
       // Draw connections between particles
@@ -76,6 +84,7 @@ export default function SignUp() {
 
           if (distance < 100) {
             ctx.beginPath()
+            
             ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - distance / 100)})`
             ctx.lineWidth = 0.5
             ctx.moveTo(particleA.x, particleA.y)
@@ -300,6 +309,8 @@ export default function SignUp() {
               </span>
               <span className="absolute inset-0 h-full w-0 bg-gray-800 transition-all duration-500 group-hover:w-full"></span>
             </button>
+
+            <SignInButtons loading={loading} />
           </form>
 
          
@@ -307,11 +318,13 @@ export default function SignUp() {
           
 
           <div className="mt-8 text-center">
+         
             <p className="text-sm text-gray-500">
               Already have an account?{" "}
               <Link href="/signin" className="font-medium text-black hover:underline transition-all">
                 Sign in
               </Link>
+
             </p>
           </div>
         </div>

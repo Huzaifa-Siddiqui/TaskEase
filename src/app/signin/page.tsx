@@ -7,7 +7,7 @@ import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Eye, EyeOff, Github, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
-
+import SignInButtons  from './../../components/ui/buttons';
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -20,7 +20,7 @@ export default function SignIn() {
   const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  //
+  // Canvas animation for the left panel
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -50,24 +50,27 @@ export default function SignIn() {
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      
+      // Update and draw particles
       particles.forEach((particle) => {
         particle.x += particle.speedX
         particle.y += particle.speedY
 
+        // Bounce off edges
         if (particle.x < 0 || particle.x > canvas.width) {
           particle.speedX *= -1
         }
-        
         if (particle.y < 0 || particle.y > canvas.height) {
           particle.speedY *= -1
         }
+
+        // Draw particle
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
         ctx.fillStyle = particle.color
         ctx.fill()
       })
 
+      // Draw connections between particles
       particles.forEach((particleA, i) => {
         particles.slice(i + 1).forEach((particleB) => {
           const dx = particleA.x - particleB.x
@@ -90,6 +93,7 @@ export default function SignIn() {
 
     animate()
 
+    // Handle resize
     const handleResize = () => {
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight
@@ -99,16 +103,18 @@ export default function SignIn() {
 
     return () => {
       window.removeEventListener("resize", handleResize)
+      
     }
+      
   }, [])
 
   useEffect(() => {
     if (status === "authenticated" && userData?.id) {
-      if (userData.id === "3ed0bcf7-dc8b-4022-9295-d21bbc14aa1c") {
-        router.push("/admin-dashboard")
-      } else {
+      // if (userData.id === "3ed0bcf7-dc8b-4022-9295-d21bbc14aa1c") {
+      //   router.push("/admin-dashboard")
+      // } else {
         router.push("/dashboard")
-      }
+      // }
     }
   }, [userData, status, router])
 
@@ -311,6 +317,8 @@ export default function SignIn() {
               </span>
               <span className="absolute inset-0 h-full w-0 bg-gray-800 transition-all duration-500 group-hover:w-full"></span>
             </button>
+            <SignInButtons loading={loading} />
+
           </form>
 
           
